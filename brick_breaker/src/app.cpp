@@ -2,18 +2,15 @@
 #include <GLFW/glfw3.h>
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
-#include <vector>
 #include <iostream>
-#include <fstream>
-#include <string>
 #include "ball.h"
+#include "shader.h"
 
 void error_callback(int error, const char* description);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void frame_buffer_size_callback(GLFWwindow* window, int width, int height);
 void APIENTRY gl_error(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);
-float* create_sphere(float cx, float cy, float radius);
-std::string parser(const std::string& file_path);
+
 
 int SCREEN_WIDTH = 640;
 int SCREEN_HEIGHT = 480;
@@ -59,26 +56,7 @@ int main(void) {
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 	std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
 
-	std::string vertex_source = parser("shaders/vertex_shader.glsl");
-	std::string fragment_source = parser("shaders/fragment_shader.glsl");
-
-	const char* vertex = vertex_source.c_str();
-	const char* fragment = fragment_source.c_str();
-
-	unsigned int program = glCreateProgram();
-	unsigned int vs = glCreateShader(GL_VERTEX_SHADER);
-	unsigned int fs = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(vs, 1, &vertex, 0);
-	glCompileShader(vs);
-	glShaderSource(fs, 1, &fragment, 0);
-	glCompileShader(fs);
-	glAttachShader(program, vs);
-	glAttachShader(program, fs);
-	glLinkProgram(program);
-	glValidateProgram(program);
-	glUseProgram(program);
-
-	Ball ball(0.0f, 0.0f, 100.0f);
+	Ball ball(0.0f, 0.0f, 20.0f);
 	float* ball_positions = ball.get_vertex_positions();
 
 	unsigned int vao_sphere;
@@ -92,10 +70,13 @@ int main(void) {
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 
-	int location = glGetUniformLocation(program, "u_ortho");
-	if (location == -1)
-		std::cout << "Location error!" << std::endl;
-	//glm::mat4 ortographic_projection = { 1.0f };
+	Shader shader;
+
+	std::string vertex_source = shader.parser("shaders/vertex_shader.glsl");
+	std::string fragment_source = shader.parser("shaders/fragment_shader.glsl");
+	unsigned int program = shader.create(vertex_source, fragment_source);
+
+
 	glm::vec2 origin(0.0f, 0.0f);
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -114,7 +95,9 @@ int main(void) {
 			0.0f, 0.0f, 0.0f, 1.0f);
 		ortographic_projection = glm::transpose(ortographic_projection);
 
-		glUniformMatrix4fv(location, 1, GL_FALSE, &ortographic_projection[0][0]);
+		shader.bind();
+		shader.set_uniform_matrix4f("u_ortho", ortographic_projection);
+
 		glDrawArrays(GL_TRIANGLE_FAN, 0, ball.get_vertex_count());
 
 		/* Swap front and back buffers */
@@ -154,32 +137,4 @@ void APIENTRY gl_error(GLenum source, GLenum type, GLuint id, GLenum severity, G
 	std::cout << message << std::endl;
 
 	exit(-1);
-}
-
-float* create_sphere(float cx, float cy, float radius) {
-	float step = 1.0f;
-	float angles = 0.0f;
-	float x = cx;
-	float y = cy;
-	float* points = (float*)_malloca(2 * sizeof(float) * 361);
-	size_t index = 0;
-	points[index++] = x, points[index++] = y;
-	for (size_t _ = 0; _ < 360; _++) {
-		x = cx + radius * glm::cos(angles);
-		y = cy + radius * glm::sin(angles);
-		angles += step;
-		points[index++] = x, points[index++] = y;
-	}
-
-	//std::cout << points[721] << " " << points[721] << std::endl;
-	return points;
-}
-
-std::string parser(const std::string& file_path) {
-	std::fstream stream(file_path);
-	std::string line;
-	std::string shader;
-	while (std::getline(stream, line))
-		shader += line + '\n';
-	return shader;
 }

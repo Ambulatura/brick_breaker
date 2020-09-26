@@ -6,16 +6,16 @@
 
 class Ball {
 public:
+	float center_x;
+	float center_y;
+	float radius;
+
+public:
 	Ball(float cx, float cy, float r);
 
 	const size_t get_size() const;
 	const size_t get_vertex_count() const;
 	float* get_vertex_positions() const;
-
-public:
-	float center_x;
-	float center_y;
-	float radius;
 
 private:
 	size_t size;
