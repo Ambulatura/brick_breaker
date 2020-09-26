@@ -309,6 +309,7 @@
     <ClInclude Include="src\other\glm\vec4.hpp" />
     <ClInclude Include="src\other\glm\vector_relational.hpp" />
     <ClInclude Include="src\shader.h" />
+    <ClInclude Include="src\utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment_shader.glsl" />

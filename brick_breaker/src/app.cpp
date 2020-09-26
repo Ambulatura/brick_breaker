@@ -11,7 +11,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void frame_buffer_size_callback(GLFWwindow* window, int width, int height);
 void APIENTRY gl_error(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);
 
-
 int SCREEN_WIDTH = 640;
 int SCREEN_HEIGHT = 480;
 
@@ -27,7 +26,7 @@ int main(void) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
-	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	/* Create a windowed mode window and its OpenGL context */
 	window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Brick Breaker Test", NULL, NULL);
@@ -57,6 +56,7 @@ int main(void) {
 	std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
 
 	Ball ball(0.0f, 0.0f, 20.0f);
+	ball.create();
 	float* ball_positions = ball.get_vertex_positions();
 
 	unsigned int vao_sphere;
@@ -74,8 +74,7 @@ int main(void) {
 
 	std::string vertex_source = shader.parser("shaders/vertex_shader.glsl");
 	std::string fragment_source = shader.parser("shaders/fragment_shader.glsl");
-	unsigned int program = shader.create(vertex_source, fragment_source);
-
+	shader.create(vertex_source, fragment_source);
 
 	glm::vec2 origin(0.0f, 0.0f);
 	/* Loop until the user closes the window */
@@ -83,6 +82,7 @@ int main(void) {
 	{
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT);
+
 		glm::vec2 lower_left_corner(origin.x - SCREEN_WIDTH / 2, origin.y - SCREEN_HEIGHT / 2);
 		float left = lower_left_corner.x;
 		float bottom = lower_left_corner.y;
@@ -97,6 +97,18 @@ int main(void) {
 
 		shader.bind();
 		shader.set_uniform_matrix4f("u_ortho", ortographic_projection);
+
+		ball.move(left, right, bottom, top);
+		ball_positions = ball.get_vertex_positions();
+
+		glGenVertexArrays(1, &vao_sphere);
+		glBindVertexArray(vao_sphere);
+		glGenBuffers(1, &vbo_sphere);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo_sphere);
+		glBufferData(GL_ARRAY_BUFFER, ball.get_size(), ball_positions, GL_DYNAMIC_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 
 		glDrawArrays(GL_TRIANGLE_FAN, 0, ball.get_vertex_count());
 
