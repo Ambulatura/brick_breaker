@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "ball.h"
 
 void error_callback(int error, const char* description);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -41,7 +42,7 @@ int main(void) {
 
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetFramebufferSizeCallback(window, frame_buffer_size_callback);
-	
+
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
@@ -60,7 +61,7 @@ int main(void) {
 
 	std::string vertex_source = parser("shaders/vertex_shader.glsl");
 	std::string fragment_source = parser("shaders/fragment_shader.glsl");
-	
+
 	const char* vertex = vertex_source.c_str();
 	const char* fragment = fragment_source.c_str();
 
@@ -77,19 +78,19 @@ int main(void) {
 	glValidateProgram(program);
 	glUseProgram(program);
 
-	float* sphere_positions = create_sphere(0.0f, 0.0f, 20.0f);
+	Ball ball(0.0f, 0.0f, 100.0f);
+	float* ball_positions = ball.get_vertex_positions();
+
 	unsigned int vao_sphere;
 	unsigned int vbo_sphere;
 	glGenVertexArrays(1, &vao_sphere);
 	glBindVertexArray(vao_sphere);
 	glGenBuffers(1, &vbo_sphere);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_sphere);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 361 * 2, sphere_positions, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, ball.get_size(), ball_positions, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
-
-	
 
 	int location = glGetUniformLocation(program, "u_ortho");
 	if (location == -1)
@@ -106,15 +107,15 @@ int main(void) {
 		float bottom = lower_left_corner.y;
 		float right = origin.x - lower_left_corner.x;
 		float top = origin.y - lower_left_corner.y;
-		
+
 		glm::mat4 ortographic_projection(2.0f / (right - left), 0.0f, 0.0f, -(right + left) / (right - left),
-										 0.0f, 2.0f / (top - bottom), 0.0f, -(top + bottom) / (top - bottom),
-										 0.0f, 0.0f, -1.0f, 0.0f,
-										 0.0f, 0.0f, 0.0f, 1.0f);
+			0.0f, 2.0f / (top - bottom), 0.0f, -(top + bottom) / (top - bottom),
+			0.0f, 0.0f, -1.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f);
 		ortographic_projection = glm::transpose(ortographic_projection);
-		
+
 		glUniformMatrix4fv(location, 1, GL_FALSE, &ortographic_projection[0][0]);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 361);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, ball.get_vertex_count());
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
@@ -182,5 +183,3 @@ std::string parser(const std::string& file_path) {
 		shader += line + '\n';
 	return shader;
 }
-
-

@@ -20,9 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\app.cpp" />
+    <ClCompile Include="src\ball.cpp" />
     <ClCompile Include="src\glad.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ball.h" />
     <ClInclude Include="src\other\glm\common.hpp" />
     <ClInclude Include="src\other\glm\detail\compute_common.hpp" />
     <ClInclude Include="src\other\glm\detail\compute_vector_relational.hpp" />
