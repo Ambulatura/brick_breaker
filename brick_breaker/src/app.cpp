@@ -4,6 +4,7 @@
 #include <iostream>
 #include "ball.h"
 #include "shader.h"
+#include "vertex_buffer.h"
 
 void error_callback(int error, const char* description);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -58,12 +59,15 @@ int main(void) {
 	ball.create();
 	float* ball_positions = ball.get_vertex_positions();
 	unsigned int vao_sphere;
-	unsigned int vbo_sphere;
+	VertexBuffer vbo_ball;
+	vbo_ball.bind();
+	vbo_ball.buffer_data(ball_positions, ball.get_vertex_size(), GL_DYNAMIC_DRAW);
+
 	glGenVertexArrays(1, &vao_sphere);
 	glBindVertexArray(vao_sphere);
-	glGenBuffers(1, &vbo_sphere);
+	/*glGenBuffers(1, &vbo_sphere);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_sphere);
-	glBufferData(GL_ARRAY_BUFFER, ball.get_vertex_size(), ball_positions, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, ball.get_vertex_size(), ball_positions, GL_DYNAMIC_DRAW);*/
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
@@ -108,9 +112,12 @@ int main(void) {
 
 		glGenVertexArrays(1, &vao_sphere);
 		glBindVertexArray(vao_sphere);
-		glGenBuffers(1, &vbo_sphere);
+		/*glGenBuffers(1, &vbo_sphere);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo_sphere);
-		glBufferData(GL_ARRAY_BUFFER, ball.get_vertex_size(), ball_positions, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, ball.get_vertex_size(), ball_positions, GL_DYNAMIC_DRAW);*/
+		VertexBuffer vbo_ball;
+		vbo_ball.bind();
+		vbo_ball.buffer_data(ball_positions, ball.get_vertex_size(), GL_DYNAMIC_DRAW);
 
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
@@ -118,7 +125,7 @@ int main(void) {
 		glGenBuffers(1, &ebo_sphere);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_sphere);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, ball.get_index_size(), ball_indices, GL_DYNAMIC_DRAW);
-
+		
 		//glDrawArrays(GL_TRIANGLE_FAN, 0, ball.get_vertex_count());
 		glDrawElements(GL_TRIANGLE_FAN, 359 * 3, GL_UNSIGNED_INT, 0);
 
