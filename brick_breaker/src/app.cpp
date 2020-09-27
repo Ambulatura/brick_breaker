@@ -72,7 +72,9 @@ int main(void) {
 	std::string fragment_source = shader.parser("shaders/fragment_shader.glsl");
 	shader.create(vertex_source, fragment_source);
 
-	glm::vec2 origin(0.0f, 0.0f);
+	float g = 0.0f;
+	float g_increment = 0.032f;
+
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
@@ -84,6 +86,7 @@ int main(void) {
 
 		shader.bind();
 		shader.set_uniform_matrix4f("u_ortho", ortho);
+		shader.set_uniform_4f("u_color", 1.0f, g, 0.0f, 1.0f);
 
 		ball.move(frame.left, frame.right, frame.bottom, frame.top);
 		ball_positions = ball.get_vertex_positions();
@@ -102,6 +105,11 @@ int main(void) {
 
 		//glDrawArrays(GL_TRIANGLE_FAN, 0, ball.get_vertex_count());
 		glDrawElements(GL_TRIANGLE_FAN, ball.get_index_count(), GL_UNSIGNED_INT, 0);
+
+		if (g > 1.0f || g < 0.0f) {
+			g_increment = -g_increment;
+		}
+		g += g_increment;
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
