@@ -1,7 +1,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
 #include <iostream>
 #include "ball.h"
 #include "shader.h"
@@ -58,17 +57,22 @@ int main(void) {
 	Ball ball(0.0f, 0.0f, 20.0f);
 	ball.create();
 	float* ball_positions = ball.get_vertex_positions();
-
 	unsigned int vao_sphere;
 	unsigned int vbo_sphere;
 	glGenVertexArrays(1, &vao_sphere);
 	glBindVertexArray(vao_sphere);
 	glGenBuffers(1, &vbo_sphere);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_sphere);
-	glBufferData(GL_ARRAY_BUFFER, ball.get_size(), ball_positions, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, ball.get_vertex_size(), ball_positions, GL_DYNAMIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
+
+	unsigned int* ball_indices = ball.get_vertex_indices();
+	unsigned int ebo_sphere;
+	glGenBuffers(1, &ebo_sphere);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_sphere);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, ball.get_index_size(), ball_indices, GL_STATIC_DRAW);
 
 	Shader shader;
 
@@ -100,17 +104,23 @@ int main(void) {
 
 		ball.move(left, right, bottom, top);
 		ball_positions = ball.get_vertex_positions();
+		ball_indices = ball.get_vertex_indices();
 
 		glGenVertexArrays(1, &vao_sphere);
 		glBindVertexArray(vao_sphere);
 		glGenBuffers(1, &vbo_sphere);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo_sphere);
-		glBufferData(GL_ARRAY_BUFFER, ball.get_size(), ball_positions, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, ball.get_vertex_size(), ball_positions, GL_DYNAMIC_DRAW);
 
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 
-		glDrawArrays(GL_TRIANGLE_FAN, 0, ball.get_vertex_count());
+		glGenBuffers(1, &ebo_sphere);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_sphere);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, ball.get_index_size(), ball_indices, GL_DYNAMIC_DRAW);
+
+		//glDrawArrays(GL_TRIANGLE_FAN, 0, ball.get_vertex_count());
+		glDrawElements(GL_TRIANGLE_FAN, 359 * 3, GL_UNSIGNED_INT, 0);
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
@@ -144,7 +154,7 @@ void APIENTRY gl_error(GLenum source, GLenum type, GLuint id, GLenum severity, G
 	//std::cout << "Source: " << source << std::endl;
 	//std::cout << "Type: " << type << std::endl;
 	std::cout << "Id: " << id << std::endl;
-	///std::cout << "Severity: " << severity << std::endl;
+	//std::cout << "Severity: " << severity << std::endl;
 	// std::cout << "Length: " << length << std::endl;
 	std::cout << message << std::endl;
 
