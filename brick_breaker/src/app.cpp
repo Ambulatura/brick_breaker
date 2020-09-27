@@ -6,6 +6,8 @@
 #include "shader.h"
 #include "vertex_buffer.h"
 #include "index_buffer.h"
+#include "vertex_buffer_layout.h"
+#include "vertex_array.h"
 #include "transform.h"
 
 void error_callback(int error, const char* description);
@@ -62,9 +64,11 @@ int main(void) {
 	float* ball_positions = ball.get_vertex_positions();
 	unsigned int* ball_indices = ball.get_vertex_indices();
 
-	unsigned int vao_sphere;
+	VertexArray vao_ball;
 	VertexBuffer vbo_ball;
 	IndexBuffer ebo_ball;
+	VertexBufferLayout layout;
+	layout.add(2, GL_FLOAT, GL_FALSE);
 
 	Shader shader;
 
@@ -88,20 +92,15 @@ int main(void) {
 		shader.set_uniform_matrix4f("u_ortho", ortho);
 		shader.set_uniform_4f("u_color", 1.0f, g, 0.0f, 1.0f);
 
-		ball.move(frame.left, frame.right, frame.bottom, frame.top);
-		ball_positions = ball.get_vertex_positions();
-
-		glGenVertexArrays(1, &vao_sphere);
-		glBindVertexArray(vao_sphere);
-
 		vbo_ball.bind();
 		vbo_ball.buffer_data(ball_positions, ball.get_vertex_size(), GL_DYNAMIC_DRAW);
-
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
-
 		ebo_ball.bind();
 		ebo_ball.buffer_data(ball_indices, ball.get_index_size(), GL_DYNAMIC_DRAW);
+
+		vao_ball.add_attribute(vbo_ball, ebo_ball, layout);
+
+		ball.move(frame.left, frame.right, frame.bottom, frame.top);
+		ball_positions = ball.get_vertex_positions();
 
 		//glDrawArrays(GL_TRIANGLE_FAN, 0, ball.get_vertex_count());
 		glDrawElements(GL_TRIANGLE_FAN, ball.get_index_count(), GL_UNSIGNED_INT, 0);
