@@ -83,7 +83,7 @@ unsigned int* Ball::get_vertex_indices() const
 	return vertex_indices;
 }
 
-void Ball::move(int left, int right, int bottom, int top) {
+void Ball::move(float left, float right, float bottom, float top) {
 	if ((right - (center_x + radius)) < 1.0f) {
 		velocity_x = -velocity_x;
 	}

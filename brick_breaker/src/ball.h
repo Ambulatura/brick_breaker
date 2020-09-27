@@ -20,7 +20,7 @@ public:
 	const size_t get_index_size() const;
 	float* get_vertex_positions() const;
 	unsigned int* get_vertex_indices() const;
-	void move(int left, int right, int bottom, int top);
+	void move(float left, float right, float bottom, float top);
 
 private:
 	float velocity_x;

@@ -5,6 +5,8 @@
 #include "ball.h"
 #include "shader.h"
 #include "vertex_buffer.h"
+#include "index_buffer.h"
+#include "transform.h"
 
 void error_callback(int error, const char* description);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -55,28 +57,14 @@ int main(void) {
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 	std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
 
-	Ball ball(0.0f, 0.0f, 20.0f);
+	Ball ball(0.0f, 0.0f, 10.0f);
 	ball.create();
 	float* ball_positions = ball.get_vertex_positions();
+	unsigned int* ball_indices = ball.get_vertex_indices();
+
 	unsigned int vao_sphere;
 	VertexBuffer vbo_ball;
-	vbo_ball.bind();
-	vbo_ball.buffer_data(ball_positions, ball.get_vertex_size(), GL_DYNAMIC_DRAW);
-
-	glGenVertexArrays(1, &vao_sphere);
-	glBindVertexArray(vao_sphere);
-	/*glGenBuffers(1, &vbo_sphere);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_sphere);
-	glBufferData(GL_ARRAY_BUFFER, ball.get_vertex_size(), ball_positions, GL_DYNAMIC_DRAW);*/
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
-
-	unsigned int* ball_indices = ball.get_vertex_indices();
-	unsigned int ebo_sphere;
-	glGenBuffers(1, &ebo_sphere);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_sphere);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, ball.get_index_size(), ball_indices, GL_STATIC_DRAW);
+	IndexBuffer ebo_ball;
 
 	Shader shader;
 
@@ -91,43 +79,29 @@ int main(void) {
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glm::vec2 lower_left_corner(origin.x - SCREEN_WIDTH / 2, origin.y - SCREEN_HEIGHT / 2);
-		float left = lower_left_corner.x;
-		float bottom = lower_left_corner.y;
-		float right = origin.x - lower_left_corner.x;
-		float top = origin.y - lower_left_corner.y;
-
-		glm::mat4 ortographic_projection(2.0f / (right - left), 0.0f, 0.0f, -(right + left) / (right - left),
-			0.0f, 2.0f / (top - bottom), 0.0f, -(top + bottom) / (top - bottom),
-			0.0f, 0.0f, -1.0f, 0.0f,
-			0.0f, 0.0f, 0.0f, 1.0f);
-		ortographic_projection = glm::transpose(ortographic_projection);
+		auto frame = Transform::align_origin_to_center(SCREEN_WIDTH, SCREEN_HEIGHT);
+		auto ortho = Transform::orthographic_projection(frame.left, frame.right, frame.bottom, frame.top);
 
 		shader.bind();
-		shader.set_uniform_matrix4f("u_ortho", ortographic_projection);
+		shader.set_uniform_matrix4f("u_ortho", ortho);
 
-		ball.move(left, right, bottom, top);
+		ball.move(frame.left, frame.right, frame.bottom, frame.top);
 		ball_positions = ball.get_vertex_positions();
-		ball_indices = ball.get_vertex_indices();
 
 		glGenVertexArrays(1, &vao_sphere);
 		glBindVertexArray(vao_sphere);
-		/*glGenBuffers(1, &vbo_sphere);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo_sphere);
-		glBufferData(GL_ARRAY_BUFFER, ball.get_vertex_size(), ball_positions, GL_DYNAMIC_DRAW);*/
-		VertexBuffer vbo_ball;
+
 		vbo_ball.bind();
 		vbo_ball.buffer_data(ball_positions, ball.get_vertex_size(), GL_DYNAMIC_DRAW);
 
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 
-		glGenBuffers(1, &ebo_sphere);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_sphere);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, ball.get_index_size(), ball_indices, GL_DYNAMIC_DRAW);
-		
+		ebo_ball.bind();
+		ebo_ball.buffer_data(ball_indices, ball.get_index_size(), GL_DYNAMIC_DRAW);
+
 		//glDrawArrays(GL_TRIANGLE_FAN, 0, ball.get_vertex_count());
-		glDrawElements(GL_TRIANGLE_FAN, 359 * 3, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLE_FAN, ball.get_index_count(), GL_UNSIGNED_INT, 0);
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
