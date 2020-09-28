@@ -9,6 +9,7 @@
 #include "vertex_buffer_layout.h"
 #include "vertex_array.h"
 #include "transform.h"
+#include "bricks.h"
 
 void error_callback(int error, const char* description);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -17,6 +18,7 @@ void APIENTRY gl_error(GLenum source, GLenum type, GLuint id, GLenum severity, G
 
 int SCREEN_WIDTH = 640;
 int SCREEN_HEIGHT = 480;
+auto frame = Transform::align_origin_to_center(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 int main(void) {
 	GLFWwindow* window;
@@ -59,6 +61,20 @@ int main(void) {
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 	std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
 
+	Bricks bricks;
+	bricks.generate(50.0f, 20.0f, 10.0f, 10.0f,
+					frame.left, frame.right, frame.bottom, frame.top,
+					100.0f, 100.0f, 200.0f, 100.0f);
+
+	float* bricks_positions = bricks.get_bricks_positions();
+	unsigned int* bricks_indices = bricks.get_bricks_indices();
+
+	VertexArray vao_bricks;
+	VertexBuffer vbo_bricks;
+	IndexBuffer ebo_bricks;
+	VertexBufferLayout bricks_layout;
+	bricks_layout.add(2, GL_FLOAT, GL_FALSE);
+	
 	Ball ball(0.0f, 0.0f, 10.0f);
 	ball.create();
 	float* ball_positions = ball.get_vertex_positions();
@@ -85,19 +101,19 @@ int main(void) {
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		auto frame = Transform::align_origin_to_center(SCREEN_WIDTH, SCREEN_HEIGHT);
 		auto ortho = Transform::orthographic_projection(frame.left, frame.right, frame.bottom, frame.top);
+		frame = Transform::align_origin_to_center(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 		shader.bind();
 		shader.set_uniform_matrix4f("u_ortho", ortho);
 		shader.set_uniform_4f("u_color", 1.0f, g, 0.0f, 1.0f);
-
+		
+		vao_ball.bind();
 		vbo_ball.bind();
-		vbo_ball.buffer_data(ball_positions, ball.get_vertex_size(), GL_DYNAMIC_DRAW);
 		ebo_ball.bind();
+		vbo_ball.buffer_data(ball_positions, ball.get_vertex_size(), GL_DYNAMIC_DRAW);
 		ebo_ball.buffer_data(ball_indices, ball.get_index_size(), GL_DYNAMIC_DRAW);
-
-		vao_ball.add_attribute(vbo_ball, ebo_ball, layout);
+		vao_ball.add_attribute(vbo_ball, layout);
 
 		ball.move(frame.left, frame.right, frame.bottom, frame.top);
 		ball_positions = ball.get_vertex_positions();
@@ -105,11 +121,25 @@ int main(void) {
 		//glDrawArrays(GL_TRIANGLE_FAN, 0, ball.get_vertex_count());
 		glDrawElements(GL_TRIANGLE_FAN, ball.get_index_count(), GL_UNSIGNED_INT, 0);
 
+		vao_ball.unbind();
+		vbo_ball.unbind();
+		ebo_ball.unbind();
+
+		vao_bricks.bind();
+		vbo_bricks.bind();
+		ebo_bricks.bind();
+		vbo_bricks.buffer_data(bricks_positions, bricks.get_position_size(), GL_STATIC_DRAW);
+		ebo_bricks.buffer_data(bricks_indices, bricks.get_index_size(), GL_STATIC_DRAW);
+		vao_bricks.add_attribute(vbo_bricks, bricks_layout);
+
+		glDrawElements(GL_TRIANGLES, bricks.get_index_count(), GL_UNSIGNED_INT, 0);
+		
 		if (g > 1.0f || g < 0.0f) {
 			g_increment = -g_increment;
 		}
 		g += g_increment;
 
+		
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
 

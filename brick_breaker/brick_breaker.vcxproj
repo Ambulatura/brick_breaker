@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\app.cpp" />
     <ClCompile Include="src\ball.cpp" />
+    <ClCompile Include="src\bricks.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\index_buffer.cpp" />
     <ClCompile Include="src\shader.cpp" />
@@ -31,6 +32,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ball.h" />
+    <ClInclude Include="src\bricks.h" />
     <ClInclude Include="src\index_buffer.h" />
     <ClInclude Include="src\other\glm\common.hpp" />
     <ClInclude Include="src\other\glm\detail\compute_common.hpp" />

@@ -3,7 +3,6 @@
 
 #include "vertex_buffer_layout.h"
 #include "vertex_buffer.h"
-#include "index_buffer.h"
 
 class VertexArray {
 private:
@@ -16,7 +15,7 @@ public:
 	void bind() const;
 	void unbind() const;
 
-	void add_attribute(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer, const VertexBufferLayout& layout) const;
+	void add_attribute(const VertexBuffer& vertex_buffer, const VertexBufferLayout& layout) const;
 };
 
 #endif // !VERTEX_ARRAY_H

@@ -17,10 +17,9 @@ void VertexArray::unbind() const {
 	glBindVertexArray(0);
 }
 
-void VertexArray::add_attribute(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer, const VertexBufferLayout& layout) const {
+void VertexArray::add_attribute(const VertexBuffer& vertex_buffer, const VertexBufferLayout& layout) const {
 	bind();
 	vertex_buffer.bind();
-	index_buffer.bind();
 	const auto& elements = layout.get_elements();
 	const auto stride = layout.get_stride();
 	unsigned int offset = 0;
