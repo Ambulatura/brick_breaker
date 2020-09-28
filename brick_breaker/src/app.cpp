@@ -64,7 +64,7 @@ int main(void) {
 	Bricks bricks;
 	bricks.generate(50.0f, 20.0f, 10.0f, 10.0f,
 					frame.left, frame.right, frame.bottom, frame.top,
-					100.0f, 100.0f, 200.0f, 100.0f);
+					50.0f, 50.0f, 230.0f, 20.0f);
 
 	float* bricks_positions = bricks.get_bricks_positions();
 	unsigned int* bricks_indices = bricks.get_bricks_indices();

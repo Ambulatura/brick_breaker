@@ -36,8 +36,8 @@ unsigned int* Bricks::get_bricks_indices() const
 }
 
 void Bricks::generate(float brick_width, float brick_height, float brick_horizontal_offset, float brick_vertical_offset,
-	float left, float right, float bottom, float top,
-	float left_offset, float right_offset, float bottom_offset, float top_offset) {
+					  float left, float right, float bottom, float top,
+					  float left_offset, float right_offset, float bottom_offset, float top_offset) {
 
 	left = left + left_offset;
 	right = right - right_offset;
@@ -137,9 +137,4 @@ void Bricks::generate(float brick_width, float brick_height, float brick_horizon
 		brick_indices[i * 6 + 5] = 0 + index_offset;
 		index_offset += 4;
 	}
-
-	/*for (int i = 0; i < horizontal_brick_count * vertical_brick_count; i++) {
-		std::cout << brick_indices[i * 6 + 0] << " " << brick_indices[i * 6 + 1] << " " << brick_indices[i * 6 + 2] << std::endl;
-		std::cout << brick_indices[i * 6 + 3] << " " << brick_indices[i * 6 + 4] << " " << brick_indices[i * 6 + 5] << std::endl;
-	}*/
 }
