@@ -1,6 +1,8 @@
-#include "ball.h"
 #include <iostream>
+#include "ball.h"
+#include "glm/glm.hpp"
 #include "utils.h"
+#include <malloc.h>
 
 Ball::Ball(float cx, float cy, float r) : center_x(cx), center_y(cy), radius(r) {
 	unsigned int random = random_number();
@@ -18,10 +20,11 @@ void Ball::create() {
 	float x = center_x;
 	float y = center_y;
 	vertex_count = (steps + 1);
-	size = 2 * vertex_count * sizeof(float);
-	vertex_positions = (float*)_malloca(size);
-	size_t index = 0;
+	vertex_size = 2 * vertex_count * sizeof(float);
+	vertex_positions = (float*)_malloca(vertex_size);
+	unsigned int index = 0;
 	vertex_positions[index++] = x, vertex_positions[index++] = y;
+	
 	// Vertex positions
 	for (size_t _ = 0; _ < steps; _++) {
 		x = center_x + (radius * glm::cos(angles));
@@ -33,6 +36,7 @@ void Ball::create() {
 	index_count = (steps - 1) * 3;
 	index_size = index_count * sizeof(unsigned int);
 	vertex_indices = (unsigned int*)_malloca(index_size);
+
 
 	size_t counter = 0;
 	index = 1;
@@ -53,33 +57,27 @@ void Ball::create() {
 	}
 }
 
-const size_t Ball::get_vertex_size() const
-{
-	return size;
+size_t Ball::get_vertex_size() const {
+	return vertex_size;
 }
 
-const size_t Ball::get_index_count() const
-{
+size_t Ball::get_index_count() const {
 	return index_count;
 }
 
-const size_t Ball::get_index_size() const
-{
+size_t Ball::get_index_size() const {
 	return index_size;
 }
 
-const size_t Ball::get_vertex_count() const
-{
+size_t Ball::get_vertex_count() const {
 	return vertex_count;
 }
 
-float* Ball::get_vertex_positions() const
-{
+const float* Ball::get_vertex_positions() const {
 	return vertex_positions;
 }
 
-unsigned int* Ball::get_vertex_indices() const
-{
+const unsigned int* Ball::get_vertex_indices() const {
 	return vertex_indices;
 }
 

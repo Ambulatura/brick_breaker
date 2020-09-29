@@ -1,38 +1,32 @@
 #include "bricks.h"
+#include <malloc.h>
 
 Bricks::Bricks() {}
 
-Bricks::~Bricks() {
-	_freea(brick_positions);
-	_freea(brick_indices);
-}
+Bricks::~Bricks() {}
 
-size_t Bricks::get_position_size() const {
-	return position_size;
+size_t Bricks::get_vertex_size() const {
+	return vertex_size;
 }
 
 size_t Bricks::get_index_size() const {
 	return index_size;
 }
 
-size_t Bricks::get_position_count() const
-{
-	return position_count;
+size_t Bricks::get_vertex_count() const {
+	return vertex_count;
 }
 
-size_t Bricks::get_index_count() const
-{
+size_t Bricks::get_index_count() const {
 	return index_count;
 }
 
-float* Bricks::get_bricks_positions() const
-{
-	return brick_positions;
+const float* Bricks::get_vertex_positions() const {
+	return vertex_positions;
 }
 
-unsigned int* Bricks::get_bricks_indices() const
-{
-	return brick_indices;
+const unsigned int* Bricks::get_vertex_indices() const {
+	return vertex_indices;
 }
 
 void Bricks::generate(float brick_width, float brick_height, float brick_horizontal_offset, float brick_vertical_offset,
@@ -44,8 +38,8 @@ void Bricks::generate(float brick_width, float brick_height, float brick_horizon
 	bottom = bottom + bottom_offset;
 	top = top - top_offset;
 
-	size_t horizontal_brick_count = 0;
-	size_t vertical_brick_count = 0;
+	unsigned int horizontal_brick_count = 0;
+	unsigned int vertical_brick_count = 0;
 
 	float total_width = right - left;
 	while (true) {
@@ -103,38 +97,39 @@ void Bricks::generate(float brick_width, float brick_height, float brick_horizon
 		y -= brick_height + brick_vertical_offset;
 	}
 
-	position_count = horizontal_brick_count * vertical_brick_count * 8;
-	position_size = position_count * sizeof(float);
-	brick_positions = (float*)_malloca(position_size);
-
+	vertex_count = horizontal_brick_count * vertical_brick_count * 8;
+	vertex_size = vertex_count * sizeof(float);
+	vertex_positions = (float*)_malloca(vertex_size);
+	
+	
 	for (size_t i = 0; i < horizontal_brick_count * vertical_brick_count; i++) {
 		Brick& br = brick_list[i];
-		brick_positions[i * 8 + 0] = br.l;
-		brick_positions[i * 8 + 1] = br.b;
+		vertex_positions[i * 8 + 0] = br.l;
+		vertex_positions[i * 8 + 1] = br.b;
 
-		brick_positions[i * 8 + 2] = br.r;
-		brick_positions[i * 8 + 3] = br.b;
+		vertex_positions[i * 8 + 2] = br.r;
+		vertex_positions[i * 8 + 3] = br.b;
 
-		brick_positions[i * 8 + 4] = br.r;
-		brick_positions[i * 8 + 5] = br.t;
+		vertex_positions[i * 8 + 4] = br.r;
+		vertex_positions[i * 8 + 5] = br.t;
 
-		brick_positions[i * 8 + 6] = br.l;
-		brick_positions[i * 8 + 7] = br.t;
-
+		vertex_positions[i * 8 + 6] = br.l;
+		vertex_positions[i * 8 + 7] = br.t;
 	}
 
 	index_count = horizontal_brick_count * vertical_brick_count * 6;
 	index_size = index_count * sizeof(unsigned int);
-	brick_indices = (unsigned int*)_malloca(index_size);
+	vertex_indices = (unsigned int*)_malloca(index_size);
 
-	size_t index_offset = 0;
+	unsigned int index_offset = 0;
 	for (size_t i = 0; i < horizontal_brick_count * vertical_brick_count; i++) {
-		brick_indices[i * 6 + 0] = 0 + index_offset;
-		brick_indices[i * 6 + 1] = 1 + index_offset;
-		brick_indices[i * 6 + 2] = 2 + index_offset;
-		brick_indices[i * 6 + 3] = 2 + index_offset;
-		brick_indices[i * 6 + 4] = 3 + index_offset;
-		brick_indices[i * 6 + 5] = 0 + index_offset;
+		vertex_indices[i * 6 + 0] = 0 + index_offset;
+		vertex_indices[i * 6 + 1] = 1 + index_offset;
+		vertex_indices[i * 6 + 2] = 2 + index_offset;
+		vertex_indices[i * 6 + 3] = 2 + index_offset;
+		vertex_indices[i * 6 + 4] = 3 + index_offset;
+		vertex_indices[i * 6 + 5] = 0 + index_offset;
+
 		index_offset += 4;
 	}
 }

@@ -10,6 +10,7 @@
 #include "vertex_array.h"
 #include "transform.h"
 #include "bricks.h"
+#include <memory>
 
 void error_callback(int error, const char* description);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -66,8 +67,8 @@ int main(void) {
 					frame.left, frame.right, frame.bottom, frame.top,
 					50.0f, 50.0f, 230.0f, 20.0f);
 
-	float* bricks_positions = bricks.get_bricks_positions();
-	unsigned int* bricks_indices = bricks.get_bricks_indices();
+	const float* bricks_positions = bricks.get_vertex_positions();
+	const unsigned int* bricks_indices = bricks.get_vertex_indices();
 
 	VertexArray vao_bricks;
 	VertexBuffer vbo_bricks;
@@ -77,8 +78,8 @@ int main(void) {
 	
 	Ball ball(0.0f, 0.0f, 10.0f);
 	ball.create();
-	float* ball_positions = ball.get_vertex_positions();
-	unsigned int* ball_indices = ball.get_vertex_indices();
+	const float* ball_positions = ball.get_vertex_positions();
+	const unsigned int* ball_indices = ball.get_vertex_indices();
 
 	VertexArray vao_ball;
 	VertexBuffer vbo_ball;
@@ -112,13 +113,12 @@ int main(void) {
 		vbo_ball.bind();
 		ebo_ball.bind();
 		vbo_ball.buffer_data(ball_positions, ball.get_vertex_size(), GL_DYNAMIC_DRAW);
-		ebo_ball.buffer_data(ball_indices, ball.get_index_size(), GL_DYNAMIC_DRAW);
+		ebo_ball.buffer_data((unsigned int*)ball_indices, ball.get_index_size(), GL_DYNAMIC_DRAW);
 		vao_ball.add_attribute(vbo_ball, layout);
 
 		ball.move(frame.left, frame.right, frame.bottom, frame.top);
 		ball_positions = ball.get_vertex_positions();
 
-		//glDrawArrays(GL_TRIANGLE_FAN, 0, ball.get_vertex_count());
 		glDrawElements(GL_TRIANGLE_FAN, ball.get_index_count(), GL_UNSIGNED_INT, 0);
 
 		vao_ball.unbind();
@@ -128,8 +128,8 @@ int main(void) {
 		vao_bricks.bind();
 		vbo_bricks.bind();
 		ebo_bricks.bind();
-		vbo_bricks.buffer_data(bricks_positions, bricks.get_position_size(), GL_STATIC_DRAW);
-		ebo_bricks.buffer_data(bricks_indices, bricks.get_index_size(), GL_STATIC_DRAW);
+		vbo_bricks.buffer_data(bricks_positions, bricks.get_vertex_size(), GL_STATIC_DRAW);
+		ebo_bricks.buffer_data((unsigned int*)bricks_indices, bricks.get_index_size(), GL_STATIC_DRAW);
 		vao_bricks.add_attribute(vbo_bricks, bricks_layout);
 
 		glDrawElements(GL_TRIANGLES, bricks.get_index_count(), GL_UNSIGNED_INT, 0);

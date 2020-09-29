@@ -1,9 +1,6 @@
 #ifndef BALL_H
 #define BALL_H
 
-#include <malloc.h>
-#include "glm/glm.hpp"
-
 class Ball {
 public:
 	float center_x;
@@ -14,18 +11,18 @@ public:
 	Ball(float cx, float cy, float r);
 
 	void create();
-	const size_t get_vertex_size() const;
-	const size_t get_vertex_count() const;
-	const size_t get_index_count() const;
-	const size_t get_index_size() const;
-	float* get_vertex_positions() const;
-	unsigned int* get_vertex_indices() const;
+	size_t get_vertex_size() const;
+	size_t get_vertex_count() const;
+	size_t get_index_count() const;
+	size_t get_index_size() const;
+	const float* get_vertex_positions() const;
+	const unsigned int* get_vertex_indices() const;
 	void move(float left, float right, float bottom, float top);
 
 private:
 	float velocity_x;
 	float velocity_y;
-	size_t size;
+	size_t vertex_size;
 	size_t vertex_count;
 	float* vertex_positions;
 	size_t index_size;
