@@ -22,8 +22,8 @@ void VertexArray::add_attribute(const VertexBuffer& vertex_buffer, const VertexB
 	vertex_buffer.bind();
 	const auto& elements = layout.get_elements();
 	const auto stride = layout.get_stride();
-	unsigned int offset = 0;
-	for (unsigned int i = 0; i < elements.size(); i++) {
+	uint32_t offset = 0;
+	for (uint32_t i = 0; i < elements.size(); i++) {
 		auto element = elements[i];
 		glEnableVertexAttribArray(i);
 		glVertexAttribPointer(i, element.count, element.type, element.normalized, stride, (const void*)offset);

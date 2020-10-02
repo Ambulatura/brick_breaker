@@ -5,7 +5,7 @@ VertexBufferLayout::VertexBufferLayout() : stride(0) {}
 
 VertexBufferLayout::~VertexBufferLayout() {}
 
-void VertexBufferLayout::add(unsigned int count, unsigned int type, unsigned char normalized) {
+void VertexBufferLayout::add(uint32_t count, uint32_t type, uint8_t normalized) {
 	elements.push_back({ count, type, normalized });
 	stride += count * VertexBufferLayoutElement::get_type_size(type);
 }
@@ -14,6 +14,6 @@ const std::vector<VertexBufferLayoutElement> VertexBufferLayout::get_elements() 
 	return elements;
 }
 
-const unsigned int VertexBufferLayout::get_stride() const {
+const uint32_t VertexBufferLayout::get_stride() const {
 	return stride;
 }

@@ -9,7 +9,7 @@ struct Frame {
 
 class Transform {
 public:
-	static Frame align_origin_to_center(int screen_width, int screen_height);
+	static Frame align_origin_to_center(uint32_t screen_width, uint32_t screen_height);
 	static glm::mat4 orthographic_projection(float left, float right, float bottom, float top);
 };
 

@@ -28,9 +28,9 @@ std::string Shader::parser(const std::string& file_path) const {
 	return shader;
 }
 
-unsigned int Shader::create(const std::string& vertex_shader, const std::string& fragment_shader) const {
-	unsigned int vs = compile(vertex_shader, GL_VERTEX_SHADER);
-	unsigned int fs = compile(fragment_shader, GL_FRAGMENT_SHADER);
+uint32_t Shader::create(const std::string& vertex_shader, const std::string& fragment_shader) const {
+	uint32_t vs = compile(vertex_shader, GL_VERTEX_SHADER);
+	uint32_t fs = compile(fragment_shader, GL_FRAGMENT_SHADER);
 	glAttachShader(obj_id, vs);
 	glAttachShader(obj_id, fs);
 	glLinkProgram(obj_id);
@@ -69,8 +69,8 @@ unsigned int Shader::create(const std::string& vertex_shader, const std::string&
 	return obj_id;
 }
 
-unsigned int Shader::compile(const std::string& shader, int type) const {
-	unsigned int shader_id = glCreateShader(type);
+uint32_t Shader::compile(const std::string& shader, int type) const {
+	uint32_t shader_id = glCreateShader(type);
 	const char* shader_source = shader.c_str();
 	glShaderSource(shader_id, 1, &shader_source, 0);
 	glCompileShader(shader_id);

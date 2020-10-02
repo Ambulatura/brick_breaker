@@ -10,7 +10,7 @@
 #include "vertex_array.h"
 #include "transform.h"
 #include "bricks.h"
-#include <memory>
+#include "game.h"
 
 void error_callback(int error, const char* description);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -19,7 +19,7 @@ void APIENTRY gl_error(GLenum source, GLenum type, GLuint id, GLenum severity, G
 
 int SCREEN_WIDTH = 640;
 int SCREEN_HEIGHT = 480;
-auto frame = Transform::align_origin_to_center(SCREEN_WIDTH, SCREEN_HEIGHT);
+//auto frame = Transform::align_origin_to_center(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 int main(void) {
 	GLFWwindow* window;
@@ -62,83 +62,15 @@ int main(void) {
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 	std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
 
-	Bricks bricks;
-	bricks.generate(50.0f, 20.0f, 10.0f, 10.0f,
-					frame.left, frame.right, frame.bottom, frame.top,
-					50.0f, 50.0f, 230.0f, 20.0f);
-
-	const float* bricks_positions = bricks.get_vertex_positions();
-	const unsigned int* bricks_indices = bricks.get_vertex_indices();
-
-	VertexArray vao_bricks;
-	VertexBuffer vbo_bricks;
-	IndexBuffer ebo_bricks;
-	VertexBufferLayout bricks_layout;
-	bricks_layout.add(2, GL_FLOAT, GL_FALSE);
-	
-	Ball ball(0.0f, 0.0f, 10.0f);
-	ball.create();
-	const float* ball_positions = ball.get_vertex_positions();
-	const unsigned int* ball_indices = ball.get_vertex_indices();
-
-	VertexArray vao_ball;
-	VertexBuffer vbo_ball;
-	IndexBuffer ebo_ball;
-	VertexBufferLayout layout;
-	layout.add(2, GL_FLOAT, GL_FALSE);
-
-	Shader shader;
-
-	std::string vertex_source = shader.parser("shaders/vertex_shader.glsl");
-	std::string fragment_source = shader.parser("shaders/fragment_shader.glsl");
-	shader.create(vertex_source, fragment_source);
-
-	float g = 0.0f;
-	float g_increment = 0.032f;
+	Game game(SCREEN_WIDTH, SCREEN_HEIGHT);
+	game.init();
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
-		/* Render here */
-		glClear(GL_COLOR_BUFFER_BIT);
+		game.update();
 
-		auto ortho = Transform::orthographic_projection(frame.left, frame.right, frame.bottom, frame.top);
-		frame = Transform::align_origin_to_center(SCREEN_WIDTH, SCREEN_HEIGHT);
-
-		shader.bind();
-		shader.set_uniform_matrix4f("u_ortho", ortho);
-		shader.set_uniform_4f("u_color", 1.0f, g, 0.0f, 1.0f);
-		
-		vao_ball.bind();
-		vbo_ball.bind();
-		ebo_ball.bind();
-		vbo_ball.buffer_data(ball_positions, ball.get_vertex_size(), GL_DYNAMIC_DRAW);
-		ebo_ball.buffer_data((unsigned int*)ball_indices, ball.get_index_size(), GL_DYNAMIC_DRAW);
-		vao_ball.add_attribute(vbo_ball, layout);
-
-		ball.move(frame.left, frame.right, frame.bottom, frame.top);
-		ball_positions = ball.get_vertex_positions();
-
-		glDrawElements(GL_TRIANGLE_FAN, ball.get_index_count(), GL_UNSIGNED_INT, 0);
-
-		vao_ball.unbind();
-		vbo_ball.unbind();
-		ebo_ball.unbind();
-
-		vao_bricks.bind();
-		vbo_bricks.bind();
-		ebo_bricks.bind();
-		vbo_bricks.buffer_data(bricks_positions, bricks.get_vertex_size(), GL_STATIC_DRAW);
-		ebo_bricks.buffer_data((unsigned int*)bricks_indices, bricks.get_index_size(), GL_STATIC_DRAW);
-		vao_bricks.add_attribute(vbo_bricks, bricks_layout);
-
-		glDrawElements(GL_TRIANGLES, bricks.get_index_count(), GL_UNSIGNED_INT, 0);
-		
-		if (g > 1.0f || g < 0.0f) {
-			g_increment = -g_increment;
-		}
-		g += g_increment;
-
+		game.draw();
 		
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);

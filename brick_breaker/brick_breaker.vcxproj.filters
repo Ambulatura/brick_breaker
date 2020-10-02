@@ -18,9 +18,6 @@
     <ClCompile Include="src\app.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\glad.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\ball.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -43,6 +40,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\bricks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\other\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -918,6 +927,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\bricks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

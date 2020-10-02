@@ -1,45 +1,25 @@
 #include "bricks.h"
-#include <malloc.h>
 
-Bricks::Bricks() {}
+Bricks::Bricks(float brick_w, float brick_h, float brick_h_offset, float brick_v_offset,
+			   float l, float r, float b, float t,
+	           float l_offset, float r_offset, float b_offset, float t_offset) : 
+               brick_width(brick_w), brick_height(brick_h), brick_horizontal_offset(brick_h_offset), brick_vertical_offset(brick_v_offset),
+			   left(l), right(r), bottom(b), top(t),
+			   left_offset(l_offset), right_offset(r_offset), bottom_offset(b_offset), top_offset(t_offset) {
+	init();
+}
 
 Bricks::~Bricks() {}
 
-size_t Bricks::get_vertex_size() const {
-	return vertex_size;
-}
-
-size_t Bricks::get_index_size() const {
-	return index_size;
-}
-
-size_t Bricks::get_vertex_count() const {
-	return vertex_count;
-}
-
-size_t Bricks::get_index_count() const {
-	return index_count;
-}
-
-const float* Bricks::get_vertex_positions() const {
-	return vertex_positions;
-}
-
-const unsigned int* Bricks::get_vertex_indices() const {
-	return vertex_indices;
-}
-
-void Bricks::generate(float brick_width, float brick_height, float brick_horizontal_offset, float brick_vertical_offset,
-					  float left, float right, float bottom, float top,
-					  float left_offset, float right_offset, float bottom_offset, float top_offset) {
+void Bricks::init() {
 
 	left = left + left_offset;
 	right = right - right_offset;
 	bottom = bottom + bottom_offset;
 	top = top - top_offset;
 
-	unsigned int horizontal_brick_count = 0;
-	unsigned int vertical_brick_count = 0;
+	uint32_t horizontal_brick_count = 0;
+	uint32_t vertical_brick_count = 0;
 
 	float total_width = right - left;
 	while (true) {
@@ -82,14 +62,14 @@ void Bricks::generate(float brick_width, float brick_height, float brick_horizon
 	float x = start_x;
 	float y = start_y;
 
-	for (size_t i = 0; i < vertical_brick_count; i++) {
-		for (size_t j = 0; j < horizontal_brick_count; j++) {
+	for (uint32_t i = 0; i < vertical_brick_count; i++) {
+		for (uint32_t j = 0; j < horizontal_brick_count; j++) {
 			if (j == 0) {
-				brick_list.push_back({ x, x + brick_width, y - brick_height, y, 1 });
+				elements.push_back({ x, x + brick_width, y - brick_height, y, 1 });
 				x += brick_width;
 			}
 			else {
-				brick_list.push_back({ x + brick_horizontal_offset, x + brick_width + brick_horizontal_offset, y - brick_height, y, 1 });
+				elements.push_back({ x + brick_horizontal_offset, x + brick_width + brick_horizontal_offset, y - brick_height, y, 1 });
 				x += brick_width + brick_horizontal_offset;
 			}
 		}
@@ -97,39 +77,71 @@ void Bricks::generate(float brick_width, float brick_height, float brick_horizon
 		y -= brick_height + brick_vertical_offset;
 	}
 
-	vertex_count = horizontal_brick_count * vertical_brick_count * 8;
+	set_vertex_positions();
+	set_vertex_indices();
+	set_primitive();
+	set_draw_type();
+	set_layout();
+}
+
+void Bricks::refresh_vertices() {
+	vertex_positions.clear();
+	vertex_indices.clear();
+	set_vertex_positions();
+	set_vertex_indices();
+}
+
+void Bricks::set_vertex_positions() {
+	for (uint32_t i = 0; i < elements.size(); i++) {
+		Brick& br = elements[i];
+		if (br.life > 0) {
+			vertex_positions.push_back(br.l);
+			vertex_positions.push_back(br.b);
+			
+			vertex_positions.push_back(br.r);
+			vertex_positions.push_back(br.b);
+		
+			vertex_positions.push_back(br.r);
+			vertex_positions.push_back(br.t);
+			
+			vertex_positions.push_back(br.l);
+			vertex_positions.push_back(br.t);
+		}
+	}
+
+	vertex_count = vertex_positions.size();
 	vertex_size = vertex_count * sizeof(float);
-	vertex_positions = (float*)_malloca(vertex_size);
-	
-	
-	for (size_t i = 0; i < horizontal_brick_count * vertical_brick_count; i++) {
-		Brick& br = brick_list[i];
-		vertex_positions[i * 8 + 0] = br.l;
-		vertex_positions[i * 8 + 1] = br.b;
+}
 
-		vertex_positions[i * 8 + 2] = br.r;
-		vertex_positions[i * 8 + 3] = br.b;
+void Bricks::set_vertex_indices() {
+	uint32_t index_offset = 0;
+	for (uint32_t i = 0; i < elements.size(); i++) {
+		Brick& br = elements[i];
 
-		vertex_positions[i * 8 + 4] = br.r;
-		vertex_positions[i * 8 + 5] = br.t;
+		if (br.life > 0) {
+			vertex_indices.push_back(0 + index_offset);
+			vertex_indices.push_back(1 + index_offset);
+			vertex_indices.push_back(2 + index_offset);
 
-		vertex_positions[i * 8 + 6] = br.l;
-		vertex_positions[i * 8 + 7] = br.t;
+			vertex_indices.push_back(2 + index_offset);
+			vertex_indices.push_back(3 + index_offset);
+			vertex_indices.push_back(0 + index_offset);
+			index_offset += 4;
+		}
 	}
 
-	index_count = horizontal_brick_count * vertical_brick_count * 6;
-	index_size = index_count * sizeof(unsigned int);
-	vertex_indices = (unsigned int*)_malloca(index_size);
+	index_count = vertex_indices.size();
+	index_size = index_count * sizeof(uint32_t);
+}
 
-	unsigned int index_offset = 0;
-	for (size_t i = 0; i < horizontal_brick_count * vertical_brick_count; i++) {
-		vertex_indices[i * 6 + 0] = 0 + index_offset;
-		vertex_indices[i * 6 + 1] = 1 + index_offset;
-		vertex_indices[i * 6 + 2] = 2 + index_offset;
-		vertex_indices[i * 6 + 3] = 2 + index_offset;
-		vertex_indices[i * 6 + 4] = 3 + index_offset;
-		vertex_indices[i * 6 + 5] = 0 + index_offset;
+void Bricks::set_primitive() {
+	primitive = GL_TRIANGLES;
+}
 
-		index_offset += 4;
-	}
+void Bricks::set_draw_type() {
+	draw_type = GL_DYNAMIC_DRAW;
+}
+
+void Bricks::set_layout() {
+	layout.add(2, GL_FLOAT, GL_FALSE);
 }

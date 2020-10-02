@@ -1,33 +1,31 @@
 #ifndef BALL_H
 #define BALL_H
 
-class Ball {
+#include <vector>
+#include "object.h"
+
+class Ball : public Object {
 public:
-	float center_x;
-	float center_y;
+	float center_x, center_y;
 	float radius;
+	float velocity_x, velocity_y;
+private:
+	float left, right, bottom, top;
+	std::vector<float> positions;
 
 public:
-	Ball(float cx, float cy, float r);
+	Ball(float cx, float cy, float rad, float l, float r, float b, float t);
+	~Ball();
 
-	void create();
-	size_t get_vertex_size() const;
-	size_t get_vertex_count() const;
-	size_t get_index_count() const;
-	size_t get_index_size() const;
-	const float* get_vertex_positions() const;
-	const unsigned int* get_vertex_indices() const;
-	void move(float left, float right, float bottom, float top);
+	void move();
 
 private:
-	float velocity_x;
-	float velocity_y;
-	size_t vertex_size;
-	size_t vertex_count;
-	float* vertex_positions;
-	size_t index_size;
-	size_t index_count;
-	unsigned int* vertex_indices;
+	void init() override;
+	void set_vertex_positions() override;
+	void set_vertex_indices() override;
+	void set_primitive() override;
+	void set_draw_type() override;
+	void set_layout() override;
 };
 
 #endif // !BALL_H

@@ -17,6 +17,6 @@ void IndexBuffer::unbind() const {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void IndexBuffer::buffer_data(unsigned int* indices, size_t size, unsigned int usage) const {
+void IndexBuffer::buffer_data(uint32_t* indices, uint32_t size, uint32_t usage) const {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, usage);
 }

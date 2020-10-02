@@ -6,7 +6,7 @@
 
 class VertexArray {
 private:
-	unsigned int obj_id;
+	uint32_t obj_id;
 
 public:
 	VertexArray();
