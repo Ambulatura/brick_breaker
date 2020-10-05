@@ -21,7 +21,9 @@
   <ItemGroup>
     <ClCompile Include="src\app.cpp" />
     <ClCompile Include="src\ball.cpp" />
+    <ClCompile Include="src\bar.cpp" />
     <ClCompile Include="src\bricks.cpp" />
+    <ClCompile Include="src\collision.cpp" />
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\other\glad.c" />
     <ClCompile Include="src\index_buffer.cpp" />
@@ -37,6 +39,7 @@
     <ClInclude Include="src\ball.h" />
     <ClInclude Include="src\bricks.h" />
     <ClInclude Include="src\game.h" />
+    <ClInclude Include="src\collision.h" />
     <ClInclude Include="src\index_buffer.h" />
     <ClInclude Include="src\object.h" />
     <ClInclude Include="src\other\glm\common.hpp" />
@@ -321,6 +324,7 @@
     <ClInclude Include="src\other\glm\vec3.hpp" />
     <ClInclude Include="src\other\glm\vec4.hpp" />
     <ClInclude Include="src\other\glm\vector_relational.hpp" />
+    <ClInclude Include="src\bar.h" />
     <ClInclude Include="src\renderer.h" />
     <ClInclude Include="src\shader.h" />
     <ClInclude Include="src\transform.h" />
@@ -545,6 +549,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -574,6 +579,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

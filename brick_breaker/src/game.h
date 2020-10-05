@@ -1,14 +1,8 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "ball.h"
-#include "bricks.h"
-#include "shader.h"
-#include "vertex_buffer.h"
-#include "index_buffer.h"
-#include "vertex_buffer_layout.h"
-#include "vertex_array.h"
 #include <vector>
+#include "shader.h"
 #include "object.h"
 #include "renderer.h"
 

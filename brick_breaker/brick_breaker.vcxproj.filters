@@ -54,6 +54,12 @@
     <ClCompile Include="src\other\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\collision.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\other\glm\detail\_features.hpp">
@@ -936,6 +942,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\collision.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\bar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

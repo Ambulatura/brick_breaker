@@ -9,15 +9,16 @@ public:
 	float center_x, center_y;
 	float radius;
 	float velocity_x, velocity_y;
+	std::vector<float> positions;
 private:
 	float left, right, bottom, top;
-	std::vector<float> positions;
 
 public:
 	Ball(float cx, float cy, float rad, float l, float r, float b, float t);
 	~Ball();
 
 	void move();
+	void change_position(float x=0.0f, float y=0.0f);
 
 private:
 	void init() override;

@@ -1,15 +1,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "glm/glm.hpp"
 #include <iostream>
-#include "ball.h"
-#include "shader.h"
-#include "vertex_buffer.h"
-#include "index_buffer.h"
-#include "vertex_buffer_layout.h"
-#include "vertex_array.h"
-#include "transform.h"
-#include "bricks.h"
 #include "game.h"
 
 void error_callback(int error, const char* description);
@@ -17,9 +8,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void frame_buffer_size_callback(GLFWwindow* window, int width, int height);
 void APIENTRY gl_error(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);
 
-int SCREEN_WIDTH = 640;
-int SCREEN_HEIGHT = 480;
-//auto frame = Transform::align_origin_to_center(SCREEN_WIDTH, SCREEN_HEIGHT);
+uint32_t SCREEN_WIDTH = 1280;
+uint32_t SCREEN_HEIGHT = 720;
 
 int main(void) {
 	GLFWwindow* window;
@@ -107,6 +97,6 @@ void APIENTRY gl_error(GLenum source, GLenum type, GLuint id, GLenum severity, G
 	//std::cout << "Severity: " << severity << std::endl;
 	// std::cout << "Length: " << length << std::endl;
 	std::cout << message << std::endl;
-
+	std::cin.get();
 	exit(-1);
 }

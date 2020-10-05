@@ -9,7 +9,10 @@ Bricks::Bricks(float brick_w, float brick_h, float brick_h_offset, float brick_v
 	init();
 }
 
-Bricks::~Bricks() {}
+Bricks::~Bricks() {
+	delete[] vertex_positions;
+	delete[] vertex_indices;
+}
 
 void Bricks::init() {
 
@@ -85,53 +88,66 @@ void Bricks::init() {
 }
 
 void Bricks::refresh_vertices() {
-	vertex_positions.clear();
-	vertex_indices.clear();
+	//vertex_positions = nullptr;
+	//vertex_indices = nullptr;
 	set_vertex_positions();
 	set_vertex_indices();
 }
 
 void Bricks::set_vertex_positions() {
+	if (vertex_positions == nullptr) {
+		vertex_size = (elements.size() * 8) * sizeof(float);
+		vertex_positions = new float[elements.size() * 8];
+	}
+
+	uint32_t index = 0;
 	for (uint32_t i = 0; i < elements.size(); i++) {
 		Brick& br = elements[i];
 		if (br.life > 0) {
-			vertex_positions.push_back(br.l);
-			vertex_positions.push_back(br.b);
-			
-			vertex_positions.push_back(br.r);
-			vertex_positions.push_back(br.b);
-		
-			vertex_positions.push_back(br.r);
-			vertex_positions.push_back(br.t);
-			
-			vertex_positions.push_back(br.l);
-			vertex_positions.push_back(br.t);
+			vertex_positions[index++] = br.l;
+			vertex_positions[index++] = br.b;
+									   
+			vertex_positions[index++] = br.r;
+			vertex_positions[index++] = br.b;
+									  
+			vertex_positions[index++] = br.r;
+			vertex_positions[index++] = br.t;
+									  
+			vertex_positions[index++] = br.l;
+			vertex_positions[index++] = br.t;
 		}
 	}
-
-	vertex_count = vertex_positions.size();
-	vertex_size = vertex_count * sizeof(float);
+	if (vertex_positions != nullptr) {
+		vertex_size = index * sizeof(float);
+	}
 }
 
 void Bricks::set_vertex_indices() {
-	uint32_t index_offset = 0;
+	if (vertex_indices == nullptr) {
+		index_count = elements.size() * 6;
+		index_size = index_count * sizeof(uint32_t);
+		vertex_indices = new uint32_t[index_size];
+	}
+	uint32_t index = 0;
+	uint32_t offset = 0;
 	for (uint32_t i = 0; i < elements.size(); i++) {
 		Brick& br = elements[i];
 
 		if (br.life > 0) {
-			vertex_indices.push_back(0 + index_offset);
-			vertex_indices.push_back(1 + index_offset);
-			vertex_indices.push_back(2 + index_offset);
-
-			vertex_indices.push_back(2 + index_offset);
-			vertex_indices.push_back(3 + index_offset);
-			vertex_indices.push_back(0 + index_offset);
-			index_offset += 4;
+			vertex_indices[index++] = 0 + offset;
+			vertex_indices[index++] = 1 + offset;
+			vertex_indices[index++] = 2 + offset;
+						  
+			vertex_indices[index++] = 2 + offset;
+			vertex_indices[index++] = 3 + offset;
+			vertex_indices[index++] = 0 + offset;
+			offset += 4;
 		}
 	}
-
-	index_count = vertex_indices.size();
-	index_size = index_count * sizeof(uint32_t);
+	if (vertex_indices != nullptr) {
+		index_count = index;
+		index_size = index_count * sizeof(uint32_t);
+	}
 }
 
 void Bricks::set_primitive() {

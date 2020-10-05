@@ -12,10 +12,6 @@ struct Brick {
 class Bricks : public Object {
 public:
 	std::vector<Brick> elements;
-private:
-	float brick_width, brick_height, brick_horizontal_offset, brick_vertical_offset;
-	float left, right, bottom, top;
-	float left_offset, right_offset, bottom_offset, top_offset;
 
 public:
 	Bricks(float brick_w, float brick_h, float brick_h_offset, float brick_v_offset,
@@ -24,6 +20,11 @@ public:
 	~Bricks();
 
 	void refresh_vertices();
+
+private:
+	float brick_width, brick_height, brick_horizontal_offset, brick_vertical_offset;
+	float left, right, bottom, top;
+	float left_offset, right_offset, bottom_offset, top_offset;
 
 private:
 	void init() override;

@@ -18,11 +18,11 @@ public:
 	VertexBufferLayout layout;
 
 protected:
-	std::vector<float> vertex_positions;
-	std::vector<uint32_t> vertex_indices;
+	float* vertex_positions;
+	uint32_t* vertex_indices;
 	uint32_t vertex_size;
 	uint32_t index_size;
-	uint32_t vertex_count;
+	//uint32_t vertex_count;
 	uint32_t index_count;
 	uint32_t primitive;
 	uint32_t draw_type;
