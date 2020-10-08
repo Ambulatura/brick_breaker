@@ -7,10 +7,10 @@ Ball::Ball(float cx, float cy, float rad, float l, float r, float b, float t) :
 	uint32_t random = random_number();
 	float direction_x = 0.5f;
 	float direction_y = 0.5f;
-	float multiplier = 22.5f;
+	float multiplier = 10.0f;
 	velocity_x = (random % 2 == 0 ? direction_x * multiplier : -direction_x * multiplier);
 	velocity_y = direction_y * multiplier;
-
+	stuck = true;
 	init();
 }
 
@@ -121,4 +121,5 @@ void Ball::change_position(float x, float y) {
 	center_x = positions[0];
 	center_y = positions[1];
 
+	set_vertex_positions();
 }

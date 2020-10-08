@@ -10,11 +10,14 @@ public:
 	float radius;
 	float velocity_x, velocity_y;
 	std::vector<float> positions;
+	bool stuck;
 private:
 	float left, right, bottom, top;
 
 public:
 	Ball(float cx, float cy, float rad, float l, float r, float b, float t);
+	Ball(const Ball& other) = delete;
+	Ball& operator=(const Ball& other) = delete;
 	~Ball();
 
 	void move();

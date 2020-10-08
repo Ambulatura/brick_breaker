@@ -68,11 +68,11 @@ void Bricks::init() {
 	for (uint32_t i = 0; i < vertical_brick_count; i++) {
 		for (uint32_t j = 0; j < horizontal_brick_count; j++) {
 			if (j == 0) {
-				elements.push_back({ x, x + brick_width, y - brick_height, y, 1 });
+				elements.push_back({ { x, x + brick_width, y - brick_height, y }, 1 });
 				x += brick_width;
 			}
 			else {
-				elements.push_back({ x + brick_horizontal_offset, x + brick_width + brick_horizontal_offset, y - brick_height, y, 1 });
+				elements.push_back({ { x + brick_horizontal_offset, x + brick_width + brick_horizontal_offset, y - brick_height, y }, 1 });
 				x += brick_width + brick_horizontal_offset;
 			}
 		}
@@ -88,33 +88,51 @@ void Bricks::init() {
 }
 
 void Bricks::refresh_vertices() {
-	//vertex_positions = nullptr;
-	//vertex_indices = nullptr;
 	set_vertex_positions();
 	set_vertex_indices();
 }
 
 void Bricks::set_vertex_positions() {
 	if (vertex_positions == nullptr) {
-		vertex_size = (elements.size() * 8) * sizeof(float);
-		vertex_positions = new float[elements.size() * 8];
+		vertex_size = (elements.size() * 8) * sizeof(float) * 16;
+		vertex_positions = new float[elements.size() * 8 * 16];
 	}
 
 	uint32_t index = 0;
 	for (uint32_t i = 0; i < elements.size(); i++) {
 		Brick& br = elements[i];
 		if (br.life > 0) {
-			vertex_positions[index++] = br.l;
-			vertex_positions[index++] = br.b;
-									   
-			vertex_positions[index++] = br.r;
-			vertex_positions[index++] = br.b;
-									  
-			vertex_positions[index++] = br.r;
-			vertex_positions[index++] = br.t;
-									  
-			vertex_positions[index++] = br.l;
-			vertex_positions[index++] = br.t;
+			vertex_positions[index++] = br.rect.left;
+			vertex_positions[index++] = br.rect.bottom;
+
+			vertex_positions[index++] = 1.0f;
+			vertex_positions[index++] = 0.4f;
+			vertex_positions[index++] = 0.6f;
+			vertex_positions[index++] = 0.99f;
+
+			vertex_positions[index++] = br.rect.right;
+			vertex_positions[index++] = br.rect.bottom;
+
+			vertex_positions[index++] = 0.92f;
+			vertex_positions[index++] = 0.94f;
+			vertex_positions[index++] = 0.89f;
+			vertex_positions[index++] = 0.99f;
+									  	  
+			vertex_positions[index++] = br.rect.right;
+			vertex_positions[index++] = br.rect.top;
+									  	   
+			vertex_positions[index++] = 0.5f;
+			vertex_positions[index++] = 0.5f;
+			vertex_positions[index++] = 0.6f;
+			vertex_positions[index++] = 0.99f;
+
+			vertex_positions[index++] = br.rect.left;
+			vertex_positions[index++] = br.rect.top;
+
+			vertex_positions[index++] = 0.796f;
+			vertex_positions[index++] = 0.294f;
+			vertex_positions[index++] = 0.086f;
+			vertex_positions[index++] = 0.99f;
 		}
 	}
 	if (vertex_positions != nullptr) {
@@ -160,4 +178,5 @@ void Bricks::set_draw_type() {
 
 void Bricks::set_layout() {
 	layout.add(2, GL_FLOAT, GL_FALSE);
+	layout.add(4, GL_FLOAT, GL_FALSE);
 }

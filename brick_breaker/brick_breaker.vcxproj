@@ -25,6 +25,7 @@
     <ClCompile Include="src\bricks.cpp" />
     <ClCompile Include="src\collision.cpp" />
     <ClCompile Include="src\game.cpp" />
+    <ClCompile Include="src\callback_handler.cpp" />
     <ClCompile Include="src\other\glad.c" />
     <ClCompile Include="src\index_buffer.cpp" />
     <ClCompile Include="src\object.cpp" />
@@ -41,6 +42,7 @@
     <ClInclude Include="src\game.h" />
     <ClInclude Include="src\collision.h" />
     <ClInclude Include="src\index_buffer.h" />
+    <ClInclude Include="src\callback_handler.h" />
     <ClInclude Include="src\object.h" />
     <ClInclude Include="src\other\glm\common.hpp" />
     <ClInclude Include="src\other\glm\detail\compute_common.hpp" />
@@ -325,6 +327,7 @@
     <ClInclude Include="src\other\glm\vec4.hpp" />
     <ClInclude Include="src\other\glm\vector_relational.hpp" />
     <ClInclude Include="src\bar.h" />
+    <ClInclude Include="src\rectangle.h" />
     <ClInclude Include="src\renderer.h" />
     <ClInclude Include="src\shader.h" />
     <ClInclude Include="src\transform.h" />
