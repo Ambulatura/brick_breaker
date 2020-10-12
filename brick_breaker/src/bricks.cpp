@@ -104,10 +104,15 @@ void Bricks::set_vertex_positions() {
 		if (br.life > 0) {
 			vertex_positions[index++] = br.rect.left;
 			vertex_positions[index++] = br.rect.bottom;
-
+			/*
 			vertex_positions[index++] = 1.0f;
 			vertex_positions[index++] = 0.4f;
 			vertex_positions[index++] = 0.6f;
+			vertex_positions[index++] = 0.99f;
+			*/
+			vertex_positions[index++] = 0.92f;
+			vertex_positions[index++] = 0.94f;
+			vertex_positions[index++] = 0.89f;
 			vertex_positions[index++] = 0.99f;
 
 			vertex_positions[index++] = br.rect.right;
@@ -120,15 +125,25 @@ void Bricks::set_vertex_positions() {
 									  	  
 			vertex_positions[index++] = br.rect.right;
 			vertex_positions[index++] = br.rect.top;
-									  	   
+			/*
 			vertex_positions[index++] = 0.5f;
 			vertex_positions[index++] = 0.5f;
 			vertex_positions[index++] = 0.6f;
 			vertex_positions[index++] = 0.99f;
+			*/
+			vertex_positions[index++] = 0.796f;
+			vertex_positions[index++] = 0.294f;
+			vertex_positions[index++] = 0.086f;
+			vertex_positions[index++] = 0.99f;
 
 			vertex_positions[index++] = br.rect.left;
 			vertex_positions[index++] = br.rect.top;
-
+			/*
+			vertex_positions[index++] = 0.796f;
+			vertex_positions[index++] = 0.294f;
+			vertex_positions[index++] = 0.086f;
+			vertex_positions[index++] = 0.99f;
+			*/
 			vertex_positions[index++] = 0.796f;
 			vertex_positions[index++] = 0.294f;
 			vertex_positions[index++] = 0.086f;

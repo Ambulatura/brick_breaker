@@ -58,9 +58,9 @@ void Game::run() {
 
 	Ball ball(static_cast<float>(screen_width) / 2.0f, 70.0f, 12.5f,
 		0.0f, static_cast<float>(screen_width), 0.0f, static_cast<float>(screen_height));
-	Bricks bricks(70.0f, 35.0f, 0.0f, 0.0f,
+	Bricks bricks(70.0f, 35.0f, 1.0f, 0.0f,
 		0.0f, static_cast<float>(screen_width), 0.0f, static_cast<float>(screen_height),
-		35.0f, 35.0f, 280.0f, 50.0f);
+		70.0f, 70.0f, 280.0f, 50.0f);
 	Bar bar(170.0f, 25.0f, 20.0f,
 		0.0f, static_cast<float>(screen_width), 0.0f, static_cast<float>(screen_height));
 	
@@ -85,7 +85,7 @@ void Game::run() {
 
 		shader.bind();
 		shader.set_uniform_matrix4f("u_ortho", ortho);
-		shader.set_uniform_4f("u_color", 0.862f, 0.196f, 0.184f, 1.0f);
+		//shader.set_uniform_4f("u_color", 0.862f, 0.196f, 0.184f, 1.0f);
 
 		renderer.clear_color(0.992f, 0.964f, 0.890f, 1.0f);
 		renderer.clear();

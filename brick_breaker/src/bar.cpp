@@ -23,10 +23,17 @@ void Bar::init() {
 		rect.left, rect.top,
 	};
 
-	float bar_colors[16] = {
+	/*float bar_colors[16] = {
 		1.0f,   0.4f,   0.6f,   0.99f,
 		0.92f,  0.94f,  0.89f,  0.99f,
 		0.5f,   0.5f,   0.6f,   0.99f,
+		0.796f, 0.294f, 0.086f, 0.99f,
+	};*/
+
+	float bar_colors[16] = {
+		0.92f,  0.94f,  0.89f,  0.99f,
+		0.92f,  0.94f,  0.89f,  0.99f,
+		0.796f, 0.294f, 0.086f, 0.99f,
 		0.796f, 0.294f, 0.086f, 0.99f,
 	};
 	
@@ -68,7 +75,7 @@ void Bar::move_right() {
 void Bar::set_vertex_positions() {
 	if (vertex_positions == nullptr) {
 		vertex_size = positions.size() * sizeof(float) * 4;
-		vertex_positions = new float[vertex_size];
+		vertex_positions = new float[positions.size() * 4];
 	}
 
 	uint32_t index = 0;

@@ -9,8 +9,8 @@ public:
 	float center_x, center_y;
 	float radius;
 	float velocity_x, velocity_y;
-	std::vector<float> positions;
 	bool stuck;
+	std::vector<float> positions;
 private:
 	float left, right, bottom, top;
 

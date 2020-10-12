@@ -7,7 +7,7 @@ Ball::Ball(float cx, float cy, float rad, float l, float r, float b, float t) :
 	uint32_t random = random_number();
 	float direction_x = 0.5f;
 	float direction_y = 0.5f;
-	float multiplier = 10.0f;
+	float multiplier = 20.0f;
 	velocity_x = (random % 2 == 0 ? direction_x * multiplier : -direction_x * multiplier);
 	velocity_y = direction_y * multiplier;
 	stuck = true;
@@ -46,12 +46,34 @@ void Ball::init() {
 
 void Ball::set_vertex_positions() {
 	if (vertex_positions == nullptr) {
-		vertex_size = positions.size() * sizeof(float);
-		vertex_positions = new float[positions.size()];
+		vertex_size = positions.size() * sizeof(float) * 4;
+		vertex_positions = new float[positions.size() * 4];
 	}
 
+	uint32_t index = 0;
+	uint32_t c_index = 0;
+	uint32_t counter = 0;
 	for (uint32_t i = 0; i < positions.size(); i++) {
-		vertex_positions[i] = positions[i];
+		vertex_positions[index++] = positions[i];
+		if (counter == 1) {
+			if (i == 1) {
+				vertex_positions[index++] = 0.92f;
+				vertex_positions[index++] = 0.94f;
+				vertex_positions[index++] = 0.89f;
+				vertex_positions[index++] = 0.99f;
+				counter = 0;
+			}
+			else {
+				vertex_positions[index++] = 0.92f;
+				vertex_positions[index++] = 0.64f;
+				vertex_positions[index++] = 0.59f;
+				vertex_positions[index++] = 0.99f;
+				counter = 0;
+			}
+		}
+		else {
+			counter++;
+		}
 	}
 }
 
@@ -79,6 +101,7 @@ void Ball::set_draw_type() {
 
 void Ball::set_layout() {
 	layout.add(2, GL_FLOAT, GL_FALSE);
+	layout.add(4, GL_FLOAT, GL_FALSE);
 }
 
 void Ball::move() {
